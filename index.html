@@ -201,6 +201,13 @@
             opacity: 0.8;
         }
 
+        .data-source {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
         @media (max-width: 768px) {
             .guilds-container {
                 grid-template-columns: 1fr;
@@ -263,10 +270,11 @@
     <div class="pagination" id="topPagination"></div>
 
     <div id="guildsContainer" class="guilds-container">
-        <div class="loading">Loading guild data...</div>
+        <div class="loading">Loading guild data from multiple sources...</div>
     </div>
 
     <div class="pagination" id="bottomPagination"></div>
+    <div id="dataSourceInfo" class="data-source">Data loaded from: tags.recfr.xyz</div>
 
     <script>
         // DOM elements
@@ -278,6 +286,7 @@
         const bottomPagination = document.getElementById('bottomPagination');
         const themeToggle = document.getElementById('themeToggle');
         const serverCount = document.getElementById('serverCount');
+        const dataSourceInfo = document.getElementById('dataSourceInfo');
 
         // App state
         let allGuilds = [];
@@ -285,16 +294,56 @@
         const itemsPerPage = 100;
         let isDarkMode = true;
 
-        // Fetch data from the JSON URL
+        // Data sources
+        const DATA_SOURCES = [
+            'https://tags.recfr.xyz/merged_servers.json',
+            'https://tags.recfr.xyz/ms2.json'
+        ];
+
+        // Fetch data from multiple sources
         async function fetchGuilds() {
             try {
-                const response = await fetch('https://files.catbox.moe/bndmt9.json');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch guild data');
+                guildsContainer.innerHTML = '<div class="loading">Loading guild data from multiple sources...</div>';
+                
+                // Fetch from all sources simultaneously
+                const fetchPromises = DATA_SOURCES.map(url => 
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) throw new Error(`Failed to fetch from ${url}`);
+                            return response.json();
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching from ${url}:`, error);
+                            return []; // Return empty array if one source fails
+                        })
+                );
+
+                // Wait for all fetches to complete
+                const results = await Promise.all(fetchPromises);
+                
+                // Combine all results and remove duplicates by server ID
+                const combinedGuilds = results.flat();
+                const uniqueGuildsMap = new Map();
+                
+                combinedGuilds.forEach(guild => {
+                    if (guild && guild.id) {
+                        // Keep the guild with more complete data if duplicates exist
+                        if (!uniqueGuildsMap.has(guild.id) || 
+                            (guild.name && guild.tag && guild.members && guild.invite)) {
+                            uniqueGuildsMap.set(guild.id, guild);
+                        }
+                    }
+                });
+                
+                allGuilds = Array.from(uniqueGuildsMap.values());
+                
+                if (allGuilds.length === 0) {
+                    throw new Error('No guild data could be loaded from any source');
                 }
-                allGuilds = await response.json();
+                
                 renderGuilds();
                 updateServerCount();
+                dataSourceInfo.textContent = `Data loaded from: ${DATA_SOURCES.map(url => new URL(url).hostname).join(' and ')}`;
             } catch (error) {
                 guildsContainer.innerHTML = `<div class="no-results">Error loading guild data: ${error.message}</div>`;
                 console.error('Error fetching guild data:', error);
@@ -308,7 +357,7 @@
             const filteredCount = filteredGuilds.length;
             
             if (filteredCount === totalCount) {
-                serverCount.textContent = `Showing ${totalCount.toLocaleString()} servers`;
+                serverCount.textContent = `Showing ${totalCount.toLocaleString()} servers (combined from ${DATA_SOURCES.length} sources)`;
             } else {
                 serverCount.textContent = `Showing ${filteredCount.toLocaleString()} of ${totalCount.toLocaleString()} servers (filtered)`;
             }
@@ -325,19 +374,19 @@
                 filtered = filtered.filter(guild => {
                     if (type === 'all') {
                         return (
-                            guild.tag.toLowerCase().includes(searchTerm) ||
-                            guild.name.toLowerCase().includes(searchTerm) ||
-                            guild.members.toString().includes(searchTerm) ||
-                            guild.invite.toLowerCase().includes(searchTerm)
+                            (guild.tag && guild.tag.toLowerCase().includes(searchTerm)) ||
+                            (guild.name && guild.name.toLowerCase().includes(searchTerm)) ||
+                            (guild.members && guild.members.toString().includes(searchTerm)) ||
+                            (guild.invite && guild.invite.toLowerCase().includes(searchTerm))
                         );
                     } else if (type === 'tag') {
-                        return guild.tag.toLowerCase().includes(searchTerm);
+                        return guild.tag && guild.tag.toLowerCase().includes(searchTerm);
                     } else if (type === 'name') {
-                        return guild.name.toLowerCase().includes(searchTerm);
+                        return guild.name && guild.name.toLowerCase().includes(searchTerm);
                     } else if (type === 'members') {
-                        return guild.members.toString().includes(searchTerm);
+                        return guild.members && guild.members.toString().includes(searchTerm);
                     } else if (type === 'invite') {
-                        return guild.invite.toLowerCase().includes(searchTerm);
+                        return guild.invite && guild.invite.toLowerCase().includes(searchTerm);
                     }
                     return true;
                 });
@@ -347,13 +396,13 @@
             const sortValue = sortBy.value;
             filtered.sort((a, b) => {
                 if (sortValue === 'members_desc') {
-                    return b.members - a.members;
+                    return (b.members || 0) - (a.members || 0);
                 } else if (sortValue === 'members_asc') {
-                    return a.members - b.members;
+                    return (a.members || 0) - (b.members || 0);
                 } else if (sortValue === 'name_asc') {
-                    return a.name.localeCompare(b.name);
+                    return (a.name || '').localeCompare(b.name || '');
                 } else if (sortValue === 'name_desc') {
-                    return b.name.localeCompare(a.name);
+                    return (b.name || '').localeCompare(a.name || '');
                 }
                 return 0;
             });
@@ -384,18 +433,18 @@
                 
                 guildCard.innerHTML = `
                     <div class="guild-header">
-                        <img src="${guild.icon}" alt="Guild Icon" class="guild-icon" onerror="this.src='https://via.placeholder.com/40'">
+                        <img src="${guild.icon || 'https://via.placeholder.com/40'}" alt="Guild Icon" class="guild-icon" onerror="this.src='https://via.placeholder.com/40'">
                         <div>
-                            <div class="guild-name">${guild.name}</div>
+                            <div class="guild-name">${guild.name || 'Unknown Server'}</div>
                             <div class="guild-tag" title="Tag">${guild.tag || 'None'}</div>
                         </div>
                     </div>
                     <div class="guild-meta">
-                        <span>Members: ${guild.members.toLocaleString()}</span>
-                        <span>ID: ${guild.id}</span>
+                        <span>Members: ${guild.members ? guild.members.toLocaleString() : 'N/A'}</span>
+                        <span>ID: ${guild.id || 'Unknown'}</span>
                     </div>
-                    <a href="${guild.invite}" target="_blank" rel="noopener noreferrer" class="join-btn" style="background-color: var(--highlight); color: white;">
-                        Join Server
+                    <a href="${guild.invite || '#'}" target="_blank" rel="noopener noreferrer" class="join-btn" style="background-color: var(--highlight); color: white;">
+                        ${guild.invite ? 'Join Server' : 'No Invite'}
                     </a>
                 `;
                 
