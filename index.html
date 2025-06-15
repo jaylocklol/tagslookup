@@ -165,7 +165,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         .page-btn {
@@ -192,6 +192,13 @@
             padding: 40px;
             font-size: 18px;
             opacity: 0.7;
+        }
+
+        .server-count {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            opacity: 0.8;
         }
 
         @media (max-width: 768px) {
@@ -252,11 +259,14 @@
         </select>
     </div>
 
+    <div id="serverCount" class="server-count">Loading server count...</div>
+    <div class="pagination" id="topPagination"></div>
+
     <div id="guildsContainer" class="guilds-container">
         <div class="loading">Loading guild data...</div>
     </div>
 
-    <div class="pagination" id="pagination"></div>
+    <div class="pagination" id="bottomPagination"></div>
 
     <script>
         // DOM elements
@@ -264,8 +274,10 @@
         const searchInput = document.getElementById('searchInput');
         const searchType = document.getElementById('searchType');
         const sortBy = document.getElementById('sortBy');
-        const pagination = document.getElementById('pagination');
+        const topPagination = document.getElementById('topPagination');
+        const bottomPagination = document.getElementById('bottomPagination');
         const themeToggle = document.getElementById('themeToggle');
+        const serverCount = document.getElementById('serverCount');
 
         // App state
         let allGuilds = [];
@@ -282,9 +294,23 @@
                 }
                 allGuilds = await response.json();
                 renderGuilds();
+                updateServerCount();
             } catch (error) {
                 guildsContainer.innerHTML = `<div class="no-results">Error loading guild data: ${error.message}</div>`;
                 console.error('Error fetching guild data:', error);
+            }
+        }
+
+        // Update server count display
+        function updateServerCount() {
+            const filteredGuilds = getFilteredGuilds();
+            const totalCount = allGuilds.length;
+            const filteredCount = filteredGuilds.length;
+            
+            if (filteredCount === totalCount) {
+                serverCount.textContent = `Showing ${totalCount.toLocaleString()} servers`;
+            } else {
+                serverCount.textContent = `Showing ${filteredCount.toLocaleString()} of ${totalCount.toLocaleString()} servers (filtered)`;
             }
         }
 
@@ -343,7 +369,9 @@
             
             if (paginatedGuilds.length === 0) {
                 guildsContainer.innerHTML = '<div class="no-results">No guilds found matching your criteria</div>';
-                pagination.innerHTML = '';
+                topPagination.innerHTML = '';
+                bottomPagination.innerHTML = '';
+                updateServerCount();
                 return;
             }
             
@@ -375,6 +403,7 @@
             });
             
             renderPagination(filteredGuilds.length);
+            updateServerCount();
         }
 
         // Render pagination controls
@@ -382,93 +411,97 @@
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             
             if (totalPages <= 1) {
-                pagination.innerHTML = '';
+                topPagination.innerHTML = '';
+                bottomPagination.innerHTML = '';
                 return;
             }
             
-            pagination.innerHTML = '';
-            
-            // Previous button
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'page-btn';
-            prevBtn.textContent = '←';
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderGuilds();
-                }
-            });
-            pagination.appendChild(prevBtn);
-            
-            // Page buttons
-            const maxVisiblePages = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-            
-            if (endPage - startPage + 1 < maxVisiblePages) {
-                startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            }
-            
-            if (startPage > 1) {
-                const firstBtn = document.createElement('button');
-                firstBtn.className = 'page-btn';
-                firstBtn.textContent = '1';
-                firstBtn.addEventListener('click', () => {
-                    currentPage = 1;
-                    renderGuilds();
-                });
-                pagination.appendChild(firstBtn);
+            // Create pagination for both top and bottom
+            [topPagination, bottomPagination].forEach(paginationContainer => {
+                paginationContainer.innerHTML = '';
                 
-                if (startPage > 2) {
-                    const ellipsis = document.createElement('span');
-                    ellipsis.textContent = '...';
-                    ellipsis.style.padding = '8px 12px';
-                    pagination.appendChild(ellipsis);
-                }
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                const pageBtn = document.createElement('button');
-                pageBtn.className = `page-btn ${i === currentPage ? 'active-page' : ''}`;
-                pageBtn.textContent = i;
-                pageBtn.addEventListener('click', () => {
-                    currentPage = i;
-                    renderGuilds();
+                // Previous button
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = '←';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderGuilds();
+                    }
                 });
-                pagination.appendChild(pageBtn);
-            }
-            
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    const ellipsis = document.createElement('span');
-                    ellipsis.textContent = '...';
-                    ellipsis.style.padding = '8px 12px';
-                    pagination.appendChild(ellipsis);
+                paginationContainer.appendChild(prevBtn);
+                
+                // Page buttons
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
                 }
                 
-                const lastBtn = document.createElement('button');
-                lastBtn.className = 'page-btn';
-                lastBtn.textContent = totalPages;
-                lastBtn.addEventListener('click', () => {
-                    currentPage = totalPages;
-                    renderGuilds();
-                });
-                pagination.appendChild(lastBtn);
-            }
-            
-            // Next button
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'page-btn';
-            nextBtn.textContent = '→';
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderGuilds();
+                if (startPage > 1) {
+                    const firstBtn = document.createElement('button');
+                    firstBtn.className = 'page-btn';
+                    firstBtn.textContent = '1';
+                    firstBtn.addEventListener('click', () => {
+                        currentPage = 1;
+                        renderGuilds();
+                    });
+                    paginationContainer.appendChild(firstBtn);
+                    
+                    if (startPage > 2) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.padding = '8px 12px';
+                        paginationContainer.appendChild(ellipsis);
+                    }
                 }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `page-btn ${i === currentPage ? 'active-page' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderGuilds();
+                    });
+                    paginationContainer.appendChild(pageBtn);
+                }
+                
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.padding = '8px 12px';
+                        paginationContainer.appendChild(ellipsis);
+                    }
+                    
+                    const lastBtn = document.createElement('button');
+                    lastBtn.className = 'page-btn';
+                    lastBtn.textContent = totalPages;
+                    lastBtn.addEventListener('click', () => {
+                        currentPage = totalPages;
+                        renderGuilds();
+                    });
+                    paginationContainer.appendChild(lastBtn);
+                }
+                
+                // Next button
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = '→';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderGuilds();
+                    }
+                });
+                paginationContainer.appendChild(nextBtn);
             });
-            pagination.appendChild(nextBtn);
         }
 
         // Toggle dark/light mode
