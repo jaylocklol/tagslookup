@@ -593,6 +593,72 @@
             letter-spacing: 0.5px;
         }
 
+        /* Dropdown filter styles */
+        .dropdown-filter {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background: var(--void-dark);
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid var(--void-deep);
+        }
+
+        .dropdown-header:hover {
+            border-color: var(--void-purple);
+        }
+
+        .dropdown-header svg {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-header.open svg {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: relative;
+            background: var(--void-deep);
+            border-radius: 0 0 4px 4px;
+            padding: 0.5rem;
+            margin-top: -4px;
+            border: 1px solid var(--void-purple);
+            border-top: none;
+            z-index: 1;
+        }
+
+        .dropdown-content.open {
+            display: block;
+        }
+
+        .dropdown-options {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Scrollbar styling */
+        .dropdown-options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dropdown-options::-webkit-scrollbar-track {
+            background: var(--void-dark);
+        }
+
+        .dropdown-options::-webkit-scrollbar-thumb {
+            background: var(--void-purple);
+            border-radius: 3px;
+        }
+
         @media (max-width: 1200px) {
             .guild-info {
                 grid-template-columns: 2fr 1fr 1fr;
@@ -729,35 +795,40 @@
         </select>
     </div>
 
-    <!-- New filter sections -->
-    <div class="filter-section">
-        <h2>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 10l5 5 5-5z"/>
+    <!-- Compact dropdown filters -->
+    <div class="dropdown-filter">
+        <div class="dropdown-header" id="colorFilterHeader">
+            <span>COLOR FILTERS</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-            PRIMARY COLOR FILTER
-        </h2>
-        <div id="primaryColorFilters" class="filter-options"></div>
+        </div>
+        <div class="dropdown-content" id="colorFilterContent">
+            <div class="dropdown-options">
+                <div class="filter-section">
+                    <h2>PRIMARY COLOR</h2>
+                    <div id="primaryColorFilters" class="filter-options"></div>
+                </div>
+                <div class="filter-section">
+                    <h2>SECONDARY COLOR</h2>
+                    <div id="secondaryColorFilters" class="filter-options"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="filter-section">
-        <h2>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 10l5 5 5-5z"/>
+    <div class="dropdown-filter">
+        <div class="dropdown-header" id="badgeFilterHeader">
+            <span>BADGE FILTERS</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-            SECONDARY COLOR FILTER
-        </h2>
-        <div id="secondaryColorFilters" class="filter-options"></div>
-    </div>
-
-    <div class="filter-section">
-        <h2>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M7 10l5 5 5-5z"/>
-            </svg>
-            BADGE FILTER
-        </h2>
-        <div id="badgeFilters" class="filter-options"></div>
+        </div>
+        <div class="dropdown-content" id="badgeFilterContent">
+            <div class="dropdown-options">
+                <div id="badgeFilters" class="filter-options"></div>
+            </div>
+        </div>
     </div>
 
     <button id="clearFilters" class="clear-filters">CLEAR ALL FILTERS</button>
@@ -792,6 +863,10 @@
         const secondaryColorFilters = document.getElementById('secondaryColorFilters');
         const badgeFilters = document.getElementById('badgeFilters');
         const clearFilters = document.getElementById('clearFilters');
+        const colorFilterHeader = document.getElementById('colorFilterHeader');
+        const colorFilterContent = document.getElementById('colorFilterContent');
+        const badgeFilterHeader = document.getElementById('badgeFilterHeader');
+        const badgeFilterContent = document.getElementById('badgeFilterContent');
 
         // App state
         let allGuilds = [];
@@ -805,19 +880,8 @@
         let selectedBadges = [];
 
         // Color and badge data
-        const colorData = [
-            {"hex": "#ff3a3a", "name": "Red"},
-            {"hex": "#790000", "name": "Brown"},
-            {"hex": "#808080", "name": "Gray"},
-            {"hex": "#e2e2e2", "name": "White"},
-            {"hex": "#c40000", "name": "Red"},
-            {"hex": "#9a0505", "name": "Brown"},
-            {"hex": "#aaaaaa", "name": "Gray"},
-            {"hex": "#9a0000", "name": "Brown"},
-            {"hex": "#3a3a3a", "name": "Indigo"},
-            {"hex": "#000000", "name": "Black"}
-        ];
-
+        let primaryColors = [];
+        let secondaryColors = [];
         const badgeData = {
             "5": "https://cdn.discordapp.com/clan-badges/997513226952658995/7dff089fbee252a67e72a08ae58a0376.png?size=16",
             "0": "https://cdn.discordapp.com/clan-badges/1369101903463714930/1897636167e0b09146fb12ce58e63294.png?size=32",
@@ -833,14 +897,94 @@
 
         // Data sources
         const DATA_SOURCES = [
-            'https://voidtags.xyz/yes.json',
-            'https://voidtags.xyz/ms2.json'
+            'http://voidtags.xyz/merged_servers.json',
+            'http://voidtags.xyz/ms2.json'
         ];
 
+        // Color data sources
+        const COLOR_SOURCES = {
+            primary: 'https://voidtags.xyz/primary_colors.json',
+            secondary: 'https://voidtags.xyz/secondary_colors.json'
+        };
+
+        // Toggle dropdown
+        function toggleDropdown(header, content) {
+            const isOpen = content.classList.contains('open');
+            if (isOpen) {
+                content.classList.remove('open');
+                header.classList.remove('open');
+            } else {
+                content.classList.add('open');
+                header.classList.add('open');
+            }
+        }
+
+        // Initialize dropdown filters
+        function initDropdownFilters() {
+            colorFilterHeader.addEventListener('click', () => toggleDropdown(colorFilterHeader, colorFilterContent));
+            badgeFilterHeader.addEventListener('click', () => toggleDropdown(badgeFilterHeader, badgeFilterContent));
+        }
+
+        // Fetch color data
+        async function fetchColorData() {
+            try {
+                const [primaryRes, secondaryRes] = await Promise.all([
+                    fetch(COLOR_SOURCES.primary),
+                    fetch(COLOR_SOURCES.secondary)
+                ]);
+
+                if (!primaryRes.ok || !secondaryRes.ok) {
+                    throw new Error('Failed to fetch color data');
+                }
+
+                const [primaryData, secondaryData] = await Promise.all([
+                    primaryRes.json(),
+                    secondaryRes.json()
+                ]);
+
+                // Process colors to remove duplicates by name
+                const uniquePrimary = [];
+                const primaryNames = new Set();
+                
+                primaryData.forEach(color => {
+                    if (!primaryNames.has(color.name)) {
+                        primaryNames.add(color.name);
+                        uniquePrimary.push(color);
+                    }
+                });
+
+                const uniqueSecondary = [];
+                const secondaryNames = new Set();
+                
+                secondaryData.forEach(color => {
+                    if (!secondaryNames.has(color.name)) {
+                        secondaryNames.add(color.name);
+                        uniqueSecondary.push(color);
+                    }
+                });
+
+                return {
+                    primary: uniquePrimary,
+                    secondary: uniqueSecondary
+                };
+            } catch (error) {
+                console.error('Error fetching color data:', error);
+                return {
+                    primary: [],
+                    secondary: []
+                };
+            }
+        }
+
         // Initialize filter controls
-        function initFilters() {
+        async function initFilters() {
+            // Fetch color data
+            const colors = await fetchColorData();
+            primaryColors = colors.primary;
+            secondaryColors = colors.secondary;
+
             // Create primary color filters
-            colorData.forEach(color => {
+            primaryColors.forEach(color => {
                 const chip = document.createElement('div');
                 chip.className = 'color-chip';
                 chip.innerHTML = `
@@ -861,7 +1005,7 @@
             });
 
             // Create secondary color filters
-            colorData.forEach(color => {
+            secondaryColors.forEach(color => {
                 const chip = document.createElement('div');
                 chip.className = 'color-chip';
                 chip.innerHTML = `
@@ -1069,6 +1213,9 @@
                 // Check for promo server
                 checkForPromoServer(allGuilds);
                 
+                // Initialize dropdown filters
+                initDropdownFilters();
+                
                 // Initialize filters after data is loaded
                 initFilters();
                 
@@ -1109,7 +1256,7 @@
             // Reset matched flag
             filtered.forEach(g => g.matched = false);
             
-            // Apply color filters
+            // Apply color filters if any are selected
             if (selectedPrimaryColors.length > 0) {
                 filtered = filtered.filter(guild => 
                     guild.badge_color_primary && selectedPrimaryColors.includes(guild.badge_color_primary.toLowerCase())
@@ -1122,7 +1269,7 @@
                 );
             }
             
-            // Apply badge filters
+            // Apply badge filters if any are selected
             if (selectedBadges.length > 0) {
                 filtered = filtered.filter(guild => 
                     guild.badge !== undefined && selectedBadges.includes(guild.badge.toString())
