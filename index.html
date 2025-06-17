@@ -3,982 +3,881 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID SEARCH</title>
+    <title>VOID TAGS SEARCH</title>
+    <link rel="icon" href="https://files.catbox.moe/i0l83l.webp" type="image/webp">
+    <meta property="og:title" content="VOID TAGS SEARCH">
+    <meta property="og:description" content="Search thousands of Discord servers by name or tag">
+    <meta property="og:image" content="https://files.catbox.moe/i0l83l.webp">
+    <meta property="og:url" content="https://voidtags.xyz">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#6a00ff">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;700&display=swap');
-        
         :root {
-            --void-black: #0a0a0a;
-            --void-deep: #121212;
-            --void-dark: #1a1a1a;
+            --deep-space: #080a1a;
+            --neon-blue: #00f0ff;
+            --neon-purple: #b400ff;
             --void-purple: #6a00ff;
-            --void-blue: #00b4ff;
-            --void-pink: #ff00b4;
-            --void-neon: #00ffb4;
-            --void-text: #e0e0e0;
-            --void-text-dim: #a0a0a0;
-            --void-glow: 0 0 10px rgba(106, 0, 255, 0.7);
-            --void-glow-blue: 0 0 10px rgba(0, 180, 255, 0.7);
-            --void-glow-pink: 0 0 10px rgba(255, 0, 180, 0.7);
-            --void-glow-neon: 0 0 10px rgba(0, 255, 180, 0.7);
+            --electric-blue: #00c8ff;
+            --dark-matter: #0e1020;
+            --cosmic-dust: #1a1c30;
+            --starlight: #e0e0ff;
+            --server-id: #8a8dff;
         }
-
+        
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
         }
-
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue); }
+            50% { box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-purple); }
+            100% { box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue); }
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px var(--neon-blue); }
+            50% { text-shadow: 0 0 15px var(--neon-purple), 0 0 20px var(--neon-blue); }
+            100% { text-shadow: 0 0 5px var(--neon-blue); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
         body {
-            background-color: var(--void-black);
-            color: var(--void-text);
             font-family: 'Rajdhani', sans-serif;
+            background-color: var(--deep-space);
+            color: var(--starlight);
             min-height: 100vh;
-            padding: 2rem;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(106, 0, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(0, 180, 255, 0.05) 0%, transparent 20%);
+                radial-gradient(circle at 10% 20%, rgba(106, 0, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
             overflow-x: hidden;
         }
-
-        /* Promo Banner Styles */
-        .promo-banner {
-            background: linear-gradient(90deg, var(--void-deep), var(--void-dark));
-            border: 1px solid var(--void-purple);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            box-shadow: var(--void-glow);
-            position: relative;
-            overflow: hidden;
-            animation: pulse 2s infinite;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        .promo-banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, 
-                rgba(106, 0, 255, 0.1), 
-                rgba(0, 180, 255, 0.1), 
-                rgba(255, 0, 180, 0.1));
-            z-index: -1;
-        }
-
-        .promo-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-            object-fit: cover;
-            border: 2px solid var(--void-purple);
-            box-shadow: var(--void-glow);
-            flex-shrink: 0;
-        }
-
-        .promo-content {
-            flex-grow: 1;
-        }
-
-        .promo-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--void-purple), var(--void-blue));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-        }
-
-        .promo-description {
-            font-size: 1rem;
-            color: var(--void-text);
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-
-        .promo-btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(90deg, var(--void-purple), var(--void-blue));
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .promo-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(106, 0, 255, 0.4);
-            background: linear-gradient(90deg, var(--void-blue), var(--void-purple));
-        }
-
-        .promo-btn:active {
-            transform: translateY(0);
-        }
-
+        
         header {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--void-dark);
-            position: relative;
+            margin-bottom: 30px;
+            animation: slideIn 0.8s ease-out;
         }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--void-purple) 20%, 
-                var(--void-blue) 50%, 
-                var(--void-purple) 80%, 
-                transparent 100%);
-            box-shadow: var(--void-glow);
+        
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
+        
+        .logo-title:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            animation: float 4s ease-in-out infinite;
+        }
+        
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--void-purple), var(--void-blue), var(--void-pink));
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 15px rgba(106, 0, 255, 0.5);
-            letter-spacing: 3px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: glow 3s infinite alternate;
+            margin: 0;
+        }
+        
+        .support-banner {
+            background: rgba(14, 16, 32, 0.7);
+            border: 1px solid var(--neon-purple);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
             text-align: center;
-        }
-
-        .controls {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             flex-wrap: wrap;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(106, 0, 255, 0.3);
+            transition: all 0.3s ease;
         }
-
-        .search-container {
-            display: flex;
-            gap: 1rem;
-            flex-grow: 1;
-            position: relative;
+        
+        .support-banner:hover {
+            box-shadow: 0 0 25px rgba(106, 0, 255, 0.5);
+            transform: translateY(-2px);
         }
-
-        input, select, button {
-            padding: 0.8rem 1.2rem;
-            border: none;
-            border-radius: 4px;
-            background-color: var(--void-dark);
-            color: var(--void-text);
-            outline: none;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-
-        input {
-            flex-grow: 1;
-            background-color: var(--void-deep);
-            border: 1px solid var(--void-dark);
-            color: var(--void-text);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        input:focus {
-            border-color: var(--void-blue);
-            box-shadow: inset 0 0 10px rgba(0, 180, 255, 0.3), var(--void-glow-blue);
-        }
-
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0a0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.7rem center;
-            background-size: 1rem;
-            padding-right: 2.5rem;
-            cursor: pointer;
-        }
-
-        select:focus {
-            border-color: var(--void-purple);
-            box-shadow: var(--void-glow);
-        }
-
-        button {
-            cursor: pointer;
-            background: linear-gradient(135deg, var(--void-purple), var(--void-blue));
-            color: white;
+        
+        .support-banner span {
             font-weight: 600;
+            color: var(--neon-blue);
             text-transform: uppercase;
             letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
         }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--void-blue), var(--void-purple));
-            opacity: 0;
-            z-index: -1;
-            transition: opacity 0.3s ease;
+        
+        .support-banner a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            background: linear-gradient(90deg, var(--void-purple), var(--neon-purple));
+            padding: 8px 15px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
-
-        button:hover::before {
-            opacity: 1;
+        
+        .support-banner a:hover {
+            background: linear-gradient(90deg, var(--neon-purple), var(--void-purple));
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--neon-purple);
         }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(106, 0, 255, 0.4);
+        
+        .support-banner a::after {
+            content: '→';
+            font-weight: bold;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
         }
-
-        button:active {
-            transform: translateY(0);
+        
+        .support-banner a:hover::after {
+            transform: translateX(3px);
         }
-
-        .guilds-container {
+        
+        .controls {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: slideIn 0.8s ease-out 0.2s both;
         }
-
-        .guild-card {
-            background: linear-gradient(145deg, var(--void-deep), var(--void-dark));
+        
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        input, select, button {
+            padding: 14px 18px;
+            font-size: 16px;
+            border: none;
             border-radius: 8px;
-            padding: 1rem;
+            background-color: var(--dark-matter);
+            color: var(--starlight);
+            border: 1px solid var(--cosmic-dust);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        
+        #searchInput {
+            width: 100;
+            background-color: rgba(14, 16, 32, 0.8);
+            color: var(--starlight);
+            font-size: 1.1rem;
+        }
+        
+        #searchInput::placeholder {
+            color: var(--cosmic-dust);
+        }
+        
+        #sortSelect {
+            background-color: rgba(14, 16, 32, 0.8);
+            cursor: pointer;
+        }
+        
+        .search-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: slideIn 0.8s ease-out 0.4s both;
+        }
+        
+        .search-option {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--void-dark);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
+            gap: 8px;
+            white-space: nowrap;
         }
-
-        .guild-card::before {
+        
+        .search-option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cosmic-dust);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-option input[type="radio"]::before {
             content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--void-purple), var(--void-blue), var(--void-pink), var(--void-neon));
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--neon-blue);
+            transform: scale(0);
+            transition: transform 0.3s ease;
         }
-
-        .guild-card:hover::before {
-            opacity: 0.3;
+        
+        .search-option input[type="radio"]:checked::before {
+            transform: scale(1);
         }
-
-        .guild-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5), var(--void-glow);
-            border-color: var(--void-purple);
+        
+        .search-option input[type="radio"]:checked {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
         }
-
-        .guild-icon {
+        
+        .search-option label {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .search-option:hover label {
+            color: var(--neon-blue);
+        }
+        
+        .page-info {
+            text-align: center;
+            margin: 15px 0;
+            color: var(--starlight);
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            animation: slideIn 0.8s ease-out 0.6s both;
+        }
+        
+        .server-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .server-card {
+            background: linear-gradient(145deg, rgba(26, 28, 48, 0.8), rgba(14, 16, 32, 0.9));
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(106, 0, 255, 0.2);
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+            animation: slideIn 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .server-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(106, 0, 255, 0.3);
+            border-color: rgba(0, 240, 255, 0.4);
+        }
+        
+        .server-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .server-icon {
             width: 60px;
             height: 60px;
-            border-radius: 12px;
+            border-radius: 5px;
             object-fit: cover;
-            border: 2px solid var(--void-dark);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            flex-shrink: 0;
+            border: 2px solid var(--void-purple);
+            box-shadow: 0 0 15px rgba(106, 0, 255, 0.3);
+            transition: all 0.3s ease;
         }
-
-        .guild-card:hover .guild-icon {
-            border-color: var(--void-blue);
-            box-shadow: var(--void-glow-blue);
-            transform: scale(1.05);
+        
+        .server-card:hover .server-icon {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
         }
-
-        .guild-info {
+        
+        .server-info {
             flex-grow: 1;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 1rem;
-            align-items: center;
+            overflow: hidden;
         }
-
-        .guild-name {
+        
+        .server-name {
             font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--void-text);
-            letter-spacing: 0.5px;
+            font-size: 1.3rem;
+            color: var(--starlight);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        .guild-tag {
-            background-color: rgba(106, 0, 255, 0.2);
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-family: monospace;
-            color: var(--void-neon);
-            border: 1px solid rgba(0, 255, 180, 0.2);
-            box-shadow: inset 0 0 5px rgba(0, 255, 180, 0.1);
-            text-align: center;
-        }
-
-        .guild-meta {
-            font-size: 0.9rem;
-            color: var(--void-text-dim);
-            text-align: center;
-        }
-
-        .logo-hash {
-            font-family: monospace;
-            font-size: 0.8rem;
-            color: var(--void-blue);
-            text-align: center;
-            word-break: break-all;
-        }
-
-        .join-btn {
-            padding: 0.7rem 1.2rem;
-            border-radius: 4px;
-            text-decoration: none;
-            background: linear-gradient(90deg, var(--void-purple), var(--void-blue));
-            color: white;
-            font-weight: 600;
+            margin-bottom: 3px;
             letter-spacing: 0.5px;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+        }
+        
+        .server-tag {
+            color: var(--neon-blue);
+            font-size: 1rem;
+            font-weight: 600;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 1px;
+        }
+        
+        .server-members {
+            color: var(--starlight);
+            margin: 10px 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .server-members::before {
+            content: '👥';
+            font-size: 1rem;
+        }
+        
+        .server-id {
+            color: var(--server-id);
+            font-size: 0.85rem;
+            font-family: monospace;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        
+        .server-invite {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--void-purple), var(--neon-purple));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
             text-align: center;
-            flex-shrink: 0;
         }
-
-        .join-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--void-blue), var(--void-purple));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .join-btn:hover::before {
-            opacity: 1;
-        }
-
-        .join-btn:hover {
+        
+        .server-invite:hover {
+            background: linear-gradient(90deg, var(--neon-purple), var(--electric-blue));
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(106, 0, 255, 0.4);
+            box-shadow: 0 5px 15px rgba(106, 0, 255, 0.5);
         }
-
-        .join-btn:active {
-            transform: translateY(0);
+        
+        .no-results {
+            text-align: center;
+            color: var(--cosmic-dust);
+            font-size: 1.2rem;
+            padding: 40px 20px;
+            background: rgba(14, 16, 32, 0.5);
+            border-radius: 12px;
+            border: 1px dashed var(--cosmic-dust);
         }
-
-        .no-invite {
-            background: var(--void-dark) !important;
-            color: var(--void-text-dim) !important;
-            cursor: not-allowed;
+        
+        .similar-results {
+            text-align: center;
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
-
-        .no-invite:hover {
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
+        
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 0.5rem;
-            margin: 2rem 0;
+            gap: 8px;
+            margin: 25px 0;
+            flex-wrap: wrap;
         }
-
-        .page-btn {
-            padding: 0.6rem 1rem;
+        
+        .page-button {
+            padding: 10px 16px;
+            background: rgba(26, 28, 48, 0.8);
+            color: var(--starlight);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
             min-width: 40px;
-            background: var(--void-dark);
-            color: var(--void-text);
-            border: 1px solid var(--void-dark);
-            border-radius: 4px;
+            text-align: center;
+            border: 1px solid var(--cosmic-dust);
         }
-
-        .page-btn:hover {
-            border-color: var(--void-blue);
-            color: var(--void-blue);
-        }
-
-        .active-page {
-            background: linear-gradient(135deg, var(--void-purple), var(--void-blue));
+        
+        .page-button:hover {
+            background: var(--void-purple);
             color: white;
-            border-color: var(--void-purple);
-            box-shadow: var(--void-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 0, 255, 0.3);
         }
-
-        .server-count {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-            color: var(--void-text-dim);
-            letter-spacing: 1px;
+        
+        .page-button.active {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            color: white;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
         }
-
-        .data-source {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.8rem;
-            color: var(--void-text-dim);
-            opacity: 0.7;
+        
+        .page-button.disabled {
+            background: rgba(26, 28, 48, 0.3);
+            color: var(--cosmic-dust);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: var(--void-blue);
-            letter-spacing: 1px;
+        
+        .pagination span {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: var(--cosmic-dust);
         }
-
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: var(--void-pink);
-            letter-spacing: 1px;
-        }
-
-        .similar-results {
-            margin-top: -1rem;
-            margin-bottom: 1rem;
-            color: var(--void-neon);
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-        }
-
-        @media (max-width: 1200px) {
-            .guild-info {
-                grid-template-columns: 2fr 1fr 1fr;
-            }
-            .logo-hash {
-                display: none;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .guild-info {
-                grid-template-columns: 2fr 1fr;
-            }
-            .guild-meta:nth-of-type(1) {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .promo-banner {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            
-            .promo-icon {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .guild-card {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .guild-info {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-                width: 100%;
-            }
-            
-            .guild-meta {
-                display: block !important;
-            }
-            
-            .logo-hash {
-                display: block;
-            }
-            
+        
+        @media (min-width: 768px) {
             .controls {
-                flex-direction: column;
+                flex-direction: row;
             }
             
             .search-container {
-                flex-direction: column;
+                flex-direction: row;
+                flex-grow: 1;
+            }
+            
+            #searchInput {
+                flex-grow: 1;
+            }
+            
+            .server-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 25px;
+            }
+            
+            .server-card {
+                height: 100%;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
             }
         }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(106, 0, 255, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(106, 0, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(106, 0, 255, 0); }
-        }
-
-        .guild-card {
-            animation: fadeIn 0.5s ease-out forwards;
-            opacity: 0;
-        }
-
-        .guild-card:nth-child(1) { animation-delay: 0.1s; }
-        .guild-card:nth-child(2) { animation-delay: 0.2s; }
-        .guild-card:nth-child(3) { animation-delay: 0.3s; }
-        .guild-card:nth-child(4) { animation-delay: 0.4s; }
-        .guild-card:nth-child(5) { animation-delay: 0.5s; }
-        .guild-card:nth-child(6) { animation-delay: 0.6s; }
-        .guild-card:nth-child(7) { animation-delay: 0.7s; }
-        .guild-card:nth-child(8) { animation-delay: 0.8s; }
-        .guild-card:nth-child(9) { animation-delay: 0.9s; }
-        .guild-card:nth-child(10) { animation-delay: 1.0s; }
+        
+        /* Animation delays for server cards */
+        .server-card:nth-child(1) { animation-delay: 0.1s; }
+        .server-card:nth-child(2) { animation-delay: 0.2s; }
+        .server-card:nth-child(3) { animation-delay: 0.3s; }
+        .server-card:nth-child(4) { animation-delay: 0.4s; }
+        .server-card:nth-child(5) { animation-delay: 0.5s; }
+        .server-card:nth-child(6) { animation-delay: 0.6s; }
+        .server-card:nth-child(7) { animation-delay: 0.7s; }
+        .server-card:nth-child(8) { animation-delay: 0.8s; }
+        .server-card:nth-child(9) { animation-delay: 0.9s; }
+        .server-card:nth-child(10) { animation-delay: 1.0s; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>VOID SEARCH</h1>
-    </header>
-
-    <!-- Promo Banner (will be shown if server with target logo hash is found) -->
-    <div id="promoBanner" class="promo-banner" style="display: none;">
-        <img id="promoIcon" src="" alt="Promo Server Icon" class="promo-icon">
-        <div class="promo-content">
-            <div class="promo-title">JOIN THE SUPPORT SERVER!</div>
-            <div id="promoDescription" class="promo-description">
-                This featured server is waiting for you! Be part of an amazing community.
+    <div class="container">
+        <header>
+            <div class="logo-title" id="logoTitle">
+                <img src="https://files.catbox.moe/i0l83l.webp" alt="VOID TAGS Logo" class="logo">
+                <h1>VOID TAGS SEARCH</h1>
             </div>
-            <a id="promoBtn" href="#" target="_blank" class="promo-btn">ENTER THE VOID</a>
+        </header>
+        
+        <div id="supportBanner" class="support-banner">
+            <!-- Support server info will be loaded here -->
+        </div>
+        
+        <div class="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search by name or tag...">
+                <select id="sortSelect">
+                    <option value="members-desc">Members: High to Low</option>
+                    <option value="members-asc">Members: Low to High</option>
+                    <option value="name-asc">Name: A-Z</option>
+                    <option value="name-desc">Name: Z-A</option>
+                    <option value="tag-asc">Tag: A-Z</option>
+                    <option value="tag-desc">Tag: Z-A</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="search-options">
+            <div class="search-option">
+                <input type="radio" id="searchBoth" name="searchType" value="both" checked>
+                <label for="searchBoth">Search Both</label>
+            </div>
+            <div class="search-option">
+                <input type="radio" id="searchName" name="searchType" value="name">
+                <label for="searchName">Names Only</label>
+            </div>
+            <div class="search-option">
+                <input type="radio" id="searchTag" name="searchType" value="tag">
+                <label for="searchTag">Tags Only</label>
+            </div>
+        </div>
+        
+        <div class="page-info" id="pageInfo"></div>
+        
+        <div class="pagination" id="topPagination">
+            <!-- Top pagination buttons -->
+        </div>
+        
+        <div class="server-list" id="serverList">
+            <!-- Servers will be loaded here -->
+        </div>
+
+        <div class="pagination" id="bottomPagination">
+            <!-- Bottom pagination buttons -->
         </div>
     </div>
-
-    <div class="controls">
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Enter server name, tag, or invite...">
-            <select id="searchType">
-                <option value="all">All</option>
-                <option value="tag">Tag</option>
-                <option value="name">Name</option>
-                <option value="members">Members</option>
-                <option value="invite">Invite</option>
-            </select>
-        </div>
-        <select id="sortBy">
-            <option value="members_desc">Members: High to Low</option>
-            <option value="members_asc">Members: Low to High</option>
-            <option value="name_asc">Name: A-Z</option>
-            <option value="name_desc">Name: Z-A</option>
-        </select>
-    </div>
-
-    <div id="serverCount" class="server-count">CONNECTING TO VOID NETWORK...</div>
-    <div id="similarResults" class="similar-results"></div>
-    <div class="pagination" id="topPagination"></div>
-
-    <div id="guildsContainer" class="guilds-container">
-        <div class="loading">ESTABLISHING VOID CONNECTION...</div>
-    </div>
-
-    <div class="pagination" id="bottomPagination"></div>
-    <div id="dataSourceInfo" class="data-source">VOID DATA CHANNELS: voidtags.xyz</div>
+  
+<a href="https://www.freecounterstat.com" title="free website counter" style="display: none !important;">
+    <img src="https://counter1.optistats.ovh/private/freecounterstat.php?c=nc4fm9nrealh45ujhugkmwb92m2p4zr6" border="0" title="free website counter" alt="free website counter" style="display: none !important;">
+</a>
 
     <script>
-        // DOM elements
-        const guildsContainer = document.getElementById('guildsContainer');
-        const searchInput = document.getElementById('searchInput');
-        const searchType = document.getElementById('searchType');
-        const sortBy = document.getElementById('sortBy');
-        const topPagination = document.getElementById('topPagination');
-        const bottomPagination = document.getElementById('bottomPagination');
-        const serverCount = document.getElementById('serverCount');
-        const dataSourceInfo = document.getElementById('dataSourceInfo');
-        const similarResults = document.getElementById('similarResults');
-        const promoBanner = document.getElementById('promoBanner');
-        const promoIcon = document.getElementById('promoIcon');
-        const promoDescription = document.getElementById('promoDescription');
-        const promoBtn = document.getElementById('promoBtn');
-
-        // App state
-        let allGuilds = [];
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        const TARGET_LOGO_HASH = 'a329493dac3a7aa4e807c9788fd4cfc2';
-
-        // Data sources
-        const DATA_SOURCES = [
-            'https://voidtags.xyz/yes.json',
-            'https://voidtags.xyz/ms2.json'
-        ];
-
-        // Extract logo hash from icon URL
-        function getLogoHash(iconUrl) {
-            if (!iconUrl) return null;
-            const parts = iconUrl.split('/');
-            return parts[parts.length - 1].split('.')[0];
-        }
-
-        // Check if search term is wrapped in quotes for exact search
-        function isExactSearch(term) {
-            return term.startsWith('"') && term.endsWith('"') && term.length > 2;
-        }
-
-        // Clean exact search term by removing quotes
-        function cleanExactSearchTerm(term) {
-            return term.substring(1, term.length - 1);
-        }
-
-        // Fuzzy search function
-        function fuzzySearch(term, text, exact = false) {
-            if (!term || !text) return false;
+        // Comprehensive digraph mapping
+        const digraphMap = {
+            // Letters and Ligatures
+            'Ǳ': 'DZ', 'ǲ': 'Dz', 'ǳ': 'dz',
+            'Ǆ': 'DZ', 'ǅ': 'Dz', 'ǆ': 'dz',
+            'Ĳ': 'IJ', 'ĳ': 'ij',
+            'Ǉ': 'LJ', 'ǈ': 'Lj', 'ǉ': 'lj',
+            'Ǌ': 'NJ', 'ǋ': 'Nj', 'ǌ': 'nj',
+            'Ꜳ': 'AA', 'ꜳ': 'aa',
+            'Æ': 'AE', 'æ': 'ae',
+            'Ꜵ': 'AO', 'ꜵ': 'ao',
+            'Ꜷ': 'AU', 'ꜷ': 'au',
+            'Ꜹ': 'AV', 'ꜹ': 'av',
+            'Ꜻ': 'AV', 'ꜻ': 'av',
+            'Ꜽ': 'AY', 'ꜽ': 'ay',
+            '🙰': 'et',
+            'ﬀ': 'ff', 'ﬃ': 'ffi', 'ﬄ': 'ffl',
+            'ﬁ': 'fi', 'ﬂ': 'fl',
+            'Œ': 'OE', 'œ': 'oe',
+            'Ꝏ': 'OO', 'ꝏ': 'oo',
+            'ẞ': 'ſs', 'ß': 'ſz',
+            'ﬆ': 'st', 'ﬅ': 'ſt',
+            'Ꜩ': 'TZ', 'ꜩ': 'tz',
+            'ᵫ': 'ue',
+            'Ꝡ': 'VY', 'ꝡ': 'vy',
             
-            term = term.toLowerCase();
-            text = text.toLowerCase();
+            // Phonetic Ligatures
+            'ȸ': 'db', 'ʣ': 'dz', 'ʪ': 'ls', 'ʫ': 'lz',
+            'ȹ': 'qp', 'ʦ': 'ts', 'ꭐ': 'ui', 'ꭑ': 'turned ui',
             
-            // Exact match
-            if (exact) {
-                return text === term;
+            // Multi-Letter Marks
+            '℀': 'a/c', '℁': 'a/s', '℅': 'c/o', '℆': 'c/u',
+            '℔': 'lb', '℠': 'SM', '™': 'TM', '℻': 'TEL', '℡': 'TEL',
+            
+            // Currency Symbols
+            '₧': 'Pts', '₨': 'Rs', '₶': 'Livre', '₯': 'Dr',
+            '₠': 'ECU', '₢': 'Cr', '₷': 'Nord',
+            
+            // Technical Symbols
+            '⎂': 'Backspace', '⏨': '10^',
+            
+            // Alchemical Symbols
+            '🜀': 'Air', '🜅': 'Earth', '🜆': 'Water', '🜇': 'Fire',
+            '🜈': 'Mercury', '🝪': 'Salt', '🝫': 'Sulfur', '🝬': 'Gold',
+            '🝛': 'Silver', '🝜': 'Copper', '🝝': 'Iron',
+            
+            // Musical Symbols
+            '𝄶': 'Coda', '𝄷': 'Segno', '𝄸': 'Repeat', '𝄹': 'End',
+            '𝄉': 'Clef', '𝄊': 'Key', '𝄫': 'Double Flat',
+            
+            // CJK Compatibility (Units)
+            '㎀': 'pA', '㎁': 'nA', '㎂': 'μA', '㎃': 'mA', '㎄': 'kA',
+            '㎅': 'KB', '㎆': 'MB', '㎇': 'GB', '㎈': 'cal', '㎉': 'kcal',
+            '㎊': 'pF', '㎋': 'nF', '㎌': 'μF', '㎍': 'μg', '㎎': 'mg',
+            '㎏': 'kg', '㎐': 'Hz', '㎑': 'kHz', '㎒': 'MHz', '㎓': 'GHz',
+            '㎔': 'THz', '㎕': 'μl', '㎖': 'ml', '㎗': 'dl', '㎘': 'kl',
+            '㎙': 'fm', '㎚': 'nm', '㎛': 'μm', '㎜': 'mm', '㎝': 'cm',
+            '㎞': 'km', '㎟': 'mm²', '㎠': 'cm²', '㎡': 'm²', '㎢': 'km²',
+            '㎣': 'mm³', '㎤': 'cm³', '㎥': 'm³', '㎦': 'km³', '㎧': 'm/s',
+            '㎨': 'm/s²', '㎩': 'Pa', '㎪': 'kPa', '㎫': 'MPa', '㎬': 'GPa',
+            '㎭': 'rad', '㎮': 'rad/s', '㎯': 'rad/s²', '㎰': 'ps', '㎱': 'ns',
+            '㎲': 'μs', '㎳': 'ms', '㎴': 'pV', '㎵': 'nV', '㎶': 'μV',
+            '㎷': 'mV', '㎸': 'kV', '㎹': 'MV', '㎺': 'pW', '㎻': 'nW',
+            '㎼': 'μW', '㎽': 'mW', '㎾': 'kW', '㎿': 'MW', '㏀': 'MΩ',
+            '㏁': 'kΩ', '㏂': 'dB', '㏃': 'Bq', '㏄': 'cc', '㏅': 'cd',
+            '㏆': 'C/kg', '㏇': 'Co', '㏈': 'dBm', '㏉': 'Gy', '㏊': 'ha',
+            '㏋': 'HP', '㏌': 'in', '㏍': 'KK', '㏎': 'KM', '㏏': 'kt',
+            '㏐': 'lm', '㏑': 'ln', '㏒': 'log', '㏓': 'lx', '㏔': 'mb',
+            '㏕': 'mil', '㏖': 'mol', '㏗': 'PH', '㏘': 'PM', '㏙': 'PPM',
+            '㏚': 'PR', '㏛': 'sr', '㏜': 'Sv', '㏝': 'Wb', '㏞': 'V/m',
+            '㏟': 'A/m',
+            
+            // Roman Numerals & Encircled Characters
+            'Ⅰ': 'I', 'Ⅱ': 'II', 'Ⅲ': 'III', 'Ⅳ': 'IV', 'Ⅴ': 'V',
+            'Ⅵ': 'VI', 'Ⅶ': 'VII', 'Ⅷ': 'VIII', 'Ⅸ': 'IX', 'Ⅹ': 'X',
+            'Ⅺ': 'XI', 'Ⅻ': 'XII', 'Ⅼ': 'L', 'Ⅽ': 'C', 'Ⅾ': 'D',
+            'Ⅿ': 'M', 'ⅰ': 'i', 'ⅱ': 'ii', 'ⅲ': 'iii', 'ⅳ': 'iv',
+            'ⅴ': 'v', 'ⅵ': 'vi', 'ⅶ': 'vii', 'ⅷ': 'viii', 'ⅸ': 'ix',
+            'ⅹ': 'x', 'ⅺ': 'xi', 'ⅻ': 'xii', 'ⅼ': 'l', 'ⅽ': 'c',
+            'ⅾ': 'd', 'ⅿ': 'm', 'ↀ': '1000', 'ↁ': '5000', 'ↂ': '10000',
+            'Ↄ': 'Ↄ', 'ↄ': 'ↄ', 'ↅ': '6', 'ↆ': '50', 'ↇ': '50000',
+            'ↈ': '100000', '↉': '0/3',
+            '①': '1', '②': '2', '③': '3', '④': '4', '⑤': '5',
+            '⑥': '6', '⑦': '7', '⑧': '8', '⑨': '9', '⑩': '10',
+            '⑪': '11', '⑫': '12', '⑬': '13', '⑭': '14', '⑮': '15',
+            '⑯': '16', '⑰': '17', '⑱': '18', '⑲': '19', '⑳': '20',
+            '⒈': '1.', '⒉': '2.', '⒊': '3.', '⒋': '4.', '⒌': '5.',
+            '⒍': '6.', '⒎': '7.', '⒏': '8.', '⒐': '9.', '⒑': '10.',
+            '⒒': '11.', '⒓': '12.', '⒔': '13.', '⒕': '14.', '⒖': '15.',
+            '⒗': '16.', '⒘': '17.', '⒙': '18.', '⒚': '19.', '⒛': '20.',
+            '⓪': '0', '⓫': '11', '⓬': '12', '⓭': '13', '⓮': '14',
+            '⓯': '15', '⓰': '16', '⓱': '17', '⓲': '18', '⓳': '19',
+            '⓴': '20', '⓵': '1', '⓶': '2', '⓷': '3', '⓸': '4',
+            '⓹': '5', '⓺': '6', '⓻': '7', '⓼': '8', '⓽': '9',
+            '⓾': '10', '⓿': '0',
+            
+            // Fractions
+            '⅐': '1/7', '⅑': '1/9', '⅒': '1/10', '⅓': '1/3',
+            '⅔': '2/3', '⅕': '1/5', '⅖': '2/5', '⅗': '3/5',
+            '⅘': '4/5', '⅙': '1/6', '⅚': '5/6', '⅛': '1/8',
+            '⅜': '3/8', '⅝': '5/8', '⅞': '7/8', '⅟': '1/'
+        };
+
+        // Function to normalize text by replacing digraphs
+        function normalizeText(text) {
+            if (!text) return '';
+            let result = '';
+            for (const char of text) {
+                result += digraphMap[char] || char;
             }
-            
-            if (text.includes(term)) return true;
-            
-            // Partial match with some tolerance
-            let termIndex = 0;
-            for (let i = 0; i < text.length; i++) {
-                if (text[i] === term[termIndex]) {
-                    termIndex++;
-                    if (termIndex === term.length) return true;
-                }
-            }
-            
-            return false;
+            return result.toLowerCase();
         }
 
-        // Find similar results
-        function findSimilarResults(term, guilds) {
-            if (!term || term.length < 3) return [];
+        // Function to calculate similarity between two strings
+        function similarity(s1, s2) {
+            const longer = s1.length > s2.length ? s1 : s2;
+            const shorter = s1.length > s2.length ? s2 : s1;
+            const longerLength = longer.length;
             
-            const similar = [];
-            term = term.toLowerCase();
+            if (longerLength === 0) return 1.0;
             
-            guilds.forEach(guild => {
-                if (guild.name && fuzzySearch(term, guild.name) && !guild.matched) {
-                    similar.push(guild);
-                } else if (guild.tag && fuzzySearch(term, guild.tag) && !guild.matched) {
-                    similar.push(guild);
-                }
-            });
-            
-            return similar.slice(0, 5); // Return top 5 similar results
+            return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
         }
 
-        // Sort guilds based on selected criteria
-        function sortGuilds(guilds) {
-            const sortValue = sortBy.value;
+        // Levenshtein distance for similarity calculation
+        function editDistance(s1, s2) {
+            s1 = s1.toLowerCase();
+            s2 = s2.toLowerCase();
             
-            return [...guilds].sort((a, b) => {
-                switch(sortValue) {
-                    case 'members_desc':
-                        return (b.members || 0) - (a.members || 0);
-                    case 'members_asc':
-                        return (a.members || 0) - (b.members || 0);
-                    case 'name_asc':
-                        return (a.name || '').localeCompare(b.name || '');
-                    case 'name_desc':
-                        return (b.name || '').localeCompare(a.name || '');
-                    default:
-                        return 0;
-                }
-            });
-        }
-
-        // Check for server with target logo hash and show promo banner if found
-        function checkForPromoServer(guilds) {
-            const promoServer = guilds.find(guild => {
-                const logoHash = getLogoHash(guild.icon);
-                return logoHash === TARGET_LOGO_HASH;
-            });
-
-            if (promoServer) {
-                promoBanner.style.display = 'flex';
-                promoIcon.src = promoServer.icon || 'https://via.placeholder.com/80/121212/6a00ff?text=VOID';
-                promoDescription.textContent = promoServer.description || 
-                    `Join ${promoServer.name || 'this amazing server'} with ${promoServer.members ? promoServer.members.toLocaleString() : 'many'} members!`;
-                promoBtn.href = promoServer.invite || '#';
-                
-                if (!promoServer.invite) {
-                    promoBtn.textContent = 'NO GATEWAY AVAILABLE';
-                    promoBtn.style.background = 'var(--void-dark)';
-                    promoBtn.style.cursor = 'not-allowed';
-                } else {
-                    promoBtn.textContent = 'ENTER THE VOID';
-                }
-            } else {
-                promoBanner.style.display = 'none';
-            }
-        }
-
-        // Fetch data from multiple sources
-        async function fetchGuilds() {
-            try {
-                guildsContainer.innerHTML = '<div class="loading">ESTABLISHING VOID CONNECTION...</div>';
-                
-                // Fetch from all sources simultaneously
-                const fetchPromises = DATA_SOURCES.map(url => 
-                    fetch(url)
-                        .then(response => {
-                            if (!response.ok) throw new Error(`VOID CONNECTION FAILED: ${url}`);
-                            return response.json();
-                        })
-                        .catch(error => {
-                            console.error(`VOID ERROR: ${url}:`, error);
-                            return []; // Return empty array if one source fails
-                        })
-                );
-
-                // Wait for all fetches to complete
-                const results = await Promise.all(fetchPromises);
-                
-                // Combine all results and remove duplicates by server ID
-                const combinedGuilds = results.flat();
-                const uniqueGuildsMap = new Map();
-                
-                combinedGuilds.forEach(guild => {
-                    if (guild && guild.id) {
-                        // Keep the guild with more complete data if duplicates exist
-                        if (!uniqueGuildsMap.has(guild.id) || 
-                            (guild.name && guild.tag && guild.members && guild.invite)) {
-                            uniqueGuildsMap.set(guild.id, guild);
+            const costs = [];
+            for (let i = 0; i <= s1.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= s2.length; j++) {
+                    if (i === 0) {
+                        costs[j] = j;
+                    } else {
+                        if (j > 0) {
+                            let newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                            }
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
                         }
                     }
-                });
+                }
+                if (i > 0) costs[s2.length] = lastValue;
+            }
+            return costs[s2.length];
+        }
+
+        // Pagination variables
+        const serversPerPage = 15;
+        let currentPage = 1;
+        let filteredServers = [];
+        let totalPages = 1;
+        let allServers = [];
+        let searchTimeout = null;
+        let supportServer = null;
+        
+        // Load and process server data
+        async function loadServers() {
+            try {
+                const response = await fetch('https://voidtags.xyz/yes.json');
+                allServers = await response.json();
                 
-                allGuilds = Array.from(uniqueGuildsMap.values());
+                // Find support server
+                supportServer = allServers.find(server => 
+                    server.invite === "https://discord.gg/yeYWtR4vbx" || 
+                    server.invite === "https://discord.gg/yeYWtR4vbx/"
+                );
                 
-                if (allGuilds.length === 0) {
-                    throw new Error('VOID NETWORK ERROR: NO DATA RECEIVED');
+                if (supportServer) {
+                    document.getElementById('supportBanner').innerHTML = `
+                        <span>JOIN THE SUPPORT SERVER!</span>
+                        <a href="${supportServer.invite}" target="_blank">
+                            ${supportServer.name} (${supportServer.tag})
+                        </a>
+                    `;
                 }
                 
-                // Check for promo server
-                checkForPromoServer(allGuilds);
-                
-                renderGuilds();
-                updateServerCount();
-                dataSourceInfo.textContent = `VOID DATA CHANNELS: ${DATA_SOURCES.map(url => new URL(url).hostname).join(' and ')}`;
+                filteredServers = [...allServers];
+                totalPages = Math.ceil(filteredServers.length / serversPerPage);
+                updateDisplay();
             } catch (error) {
-                guildsContainer.innerHTML = `<div class="no-results">${error.message}</div>`;
-                console.error('VOID ERROR:', error);
+                console.error('Error loading server data:', error);
+                document.getElementById('serverList').innerHTML = '<div class="no-results">Error loading server data. Please try again later.</div>';
             }
         }
 
-        // Update server count display
-        function updateServerCount() {
-            const filteredGuilds = getFilteredGuilds();
-            const totalCount = allGuilds.length;
-            const filteredCount = filteredGuilds.length;
+        // Display servers for current page
+        function displayServers() {
+            const startIndex = (currentPage - 1) * serversPerPage;
+            const endIndex = startIndex + serversPerPage;
+            const serversToDisplay = filteredServers.slice(startIndex, endIndex);
+            const serverListElement = document.getElementById('serverList');
             
-            if (filteredCount === totalCount) {
-                serverCount.textContent = `VOID SERVERS ONLINE: ${totalCount.toLocaleString()}`;
-            } else {
-                serverCount.textContent = `VOID SERVERS FOUND: ${filteredCount.toLocaleString()} OF ${totalCount.toLocaleString()}`;
-            }
-        }
+            serverListElement.innerHTML = '';
+            
+            if (serversToDisplay.length === 0) {
+                // Show similar servers if no exact matches found
+                const searchTerm = normalizeText(document.getElementById('searchInput').value);
+                if (searchTerm) {
+                    const similarServers = findSimilarServers(searchTerm);
+                    if (similarServers.length > 0) {
+                        const similarHeader = document.createElement('div');
+                        similarHeader.className = 'similar-results';
 
-        // Filter and sort guilds based on user input
-        function getFilteredGuilds() {
-            let searchTerm = searchInput.value;
-            const type = searchType.value;
-            const exactSearch = isExactSearch(searchTerm);
-            
-            if (exactSearch) {
-                searchTerm = cleanExactSearchTerm(searchTerm);
-            }
-            
-            let filtered = [...allGuilds];
-            
-            // Reset matched flag
-            filtered.forEach(g => g.matched = false);
-            
-            if (searchTerm) {
-                filtered = filtered.filter(guild => {
-                    let matched = false;
-                    const term = searchTerm.toLowerCase();
-                    
-                    if (type === 'all') {
-                        matched = 
-                            (guild.tag && fuzzySearch(term, guild.tag, exactSearch)) ||
-                            (guild.name && fuzzySearch(term, guild.name, exactSearch)) ||
-                            (guild.members && guild.members.toString().includes(term)) ||
-                            (guild.invite && fuzzySearch(term, guild.invite, exactSearch));
-                    } else if (type === 'tag') {
-                        matched = guild.tag && fuzzySearch(term, guild.tag, exactSearch);
-                    } else if (type === 'name') {
-                        matched = guild.name && fuzzySearch(term, guild.name, exactSearch);
-                    } else if (type === 'members') {
-                        matched = guild.members && guild.members.toString().includes(term);
-                    } else if (type === 'invite') {
-                        matched = guild.invite && fuzzySearch(term, guild.invite, exactSearch);
+
+                        
+                        similarServers.slice(0, serversPerPage).forEach(server => {
+                            serverListElement.appendChild(createServerCard(server));
+                        });
+                    } else {
+                        serverListElement.innerHTML = '<div class="no-results">No servers found matching your search.</div>';
                     }
-                    
-                    if (matched) guild.matched = true;
-                    return matched;
-                });
-                
-                // Show similar results if no exact matches
-                if (filtered.length === 0 && searchTerm.length >= 3 && !exactSearch) {
-                    const similar = findSimilarResults(searchTerm, allGuilds);
-                    if (similar.length > 0) {
-                        similarResults.textContent = `VOID SUGGESTIONS: SIMILAR TO "${searchTerm}"`;
-                        return similar;
-                    }
+                } else {
+                    serverListElement.innerHTML = '<div class="no-results">No servers found matching your search.</div>';
                 }
-            }
-            
-            similarResults.textContent = '';
-            
-            // Sort the filtered results
-            return sortGuilds(filtered);
-        }
-
-        // Render guilds to the DOM
-        function renderGuilds() {
-            const filteredGuilds = getFilteredGuilds();
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const paginatedGuilds = filteredGuilds.slice(startIndex, startIndex + itemsPerPage);
-            
-            if (paginatedGuilds.length === 0) {
-                guildsContainer.innerHTML = '<div class="no-results">NO VOID SERVERS MATCHING YOUR QUERY</div>';
-                topPagination.innerHTML = '';
-                bottomPagination.innerHTML = '';
-                updateServerCount();
                 return;
             }
             
-            guildsContainer.innerHTML = '';
-            
-            paginatedGuilds.forEach((guild, index) => {
-                const guildCard = document.createElement('div');
-                guildCard.className = 'guild-card';
-                guildCard.style.animationDelay = `${(index % 10) * 0.1}s`;
-                
-                const logoHash = guild.icon ? getLogoHash(guild.icon) : null;
-                
-                guildCard.innerHTML = `
-                    <img src="${guild.icon || 'https://via.placeholder.com/60/121212/6a00ff?text=VOID'}" 
-                         alt="Guild Icon" 
-                         class="guild-icon" 
-                         onerror="this.src='https://via.placeholder.com/60/121212/6a00ff?text=VOID'">
-                    
-                    <div class="guild-info">
-                        <div class="guild-name" title="${guild.name || 'UNKNOWN VOID SERVER'}">
-                            ${guild.name || 'UNKNOWN VOID SERVER'}
-                        </div>
-                        
-                        <div class="guild-tag" title="Tag">${guild.tag || 'NONE'}</div>
-                        
-                        <div class="guild-meta" title="Members">
-                            ${guild.members ? guild.members.toLocaleString() + ' MEMBERS' : 'N/A'}
-                        </div>
-                        
-                        ${logoHash ? `
-                            <div class="logo-hash" title="Logo Hash">
-                                ${logoHash}
-                            </div>
-                        ` : `
-                            <div class="logo-hash" title="No Logo">
-                                NO LOGO
-                            </div>
-                        `}
-                    </div>
-                    
-                    <a href="${guild.invite || '#'}" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       class="join-btn ${!guild.invite ? 'no-invite' : ''}">
-                        ${guild.invite ? 'ENTER VOID' : 'NO GATEWAY'}
-                    </a>
-                `;
-                
-                guildsContainer.appendChild(guildCard);
+            serversToDisplay.forEach(server => {
+                serverListElement.appendChild(createServerCard(server));
             });
-            
-            renderPagination(filteredGuilds.length);
-            updateServerCount();
         }
 
-        // Render pagination controls
-        function renderPagination(totalItems) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
+        // Create a server card element
+        function createServerCard(server) {
+            const card = document.createElement('div');
+            card.className = 'server-card';
+            card.innerHTML = `
+                <div class="server-header">
+                    <img src="${server.icon}" alt="${server.name}" class="server-icon" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                    <div class="server-info">
+                        <div class="server-name">${server.name}</div>
+                        <div class="server-tag">${server.tag}</div>
+                    </div>
+                </div>
+                <div class="server-members">${server.members.toLocaleString()} members</div>
+                <div class="server-id">ID: ${server.id}</div>
+                <a href="${server.invite}" class="server-invite" target="_blank">Join Server</a>
+            `;
+            return card;
+        }
+
+        // Find similar servers when no exact matches are found
+        function findSimilarServers(searchTerm) {
+            const searchType = document.querySelector('input[name="searchType"]:checked').value;
+            const threshold = 0.4; // Similarity threshold
             
-            if (totalPages <= 1) {
-                topPagination.innerHTML = '';
-                bottomPagination.innerHTML = '';
-                return;
-            }
+            return allServers
+                .map(server => {
+                    let score = 0;
+                    const normalizedName = normalizeText(server.name);
+                    const normalizedTag = normalizeText(server.tag);
+                    
+                    if (searchType === 'name' || searchType === 'both') {
+                        score = Math.max(score, similarity(normalizedName, searchTerm));
+                    }
+                    if (searchType === 'tag' || searchType === 'both') {
+                        score = Math.max(score, similarity(normalizedTag, searchTerm));
+                    }
+                    
+                    return { server, score };
+                })
+                .filter(item => item.score >= threshold)
+                .sort((a, b) => b.score - a.score)
+                .map(item => item.server);
+        }
+
+        // Update pagination controls
+        function updatePagination() {
+            const topPagination = document.getElementById('topPagination');
+            const bottomPagination = document.getElementById('bottomPagination');
             
-            // Create pagination for both top and bottom
-            [topPagination, bottomPagination].forEach(paginationContainer => {
-                paginationContainer.innerHTML = '';
+            [topPagination, bottomPagination].forEach(paginationElement => {
+                paginationElement.innerHTML = '';
                 
                 // Previous button
-                const prevBtn = document.createElement('button');
-                prevBtn.className = 'page-btn';
-                prevBtn.textContent = '←';
-                prevBtn.disabled = currentPage === 1;
-                prevBtn.addEventListener('click', () => {
+                const prevButton = document.createElement('button');
+                prevButton.className = `page-button ${currentPage === 1 ? 'disabled' : ''}`;
+                prevButton.textContent = 'Previous';
+                prevButton.addEventListener('click', () => {
                     if (currentPage > 1) {
                         currentPage--;
-                        renderGuilds();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        updateDisplay();
                     }
                 });
-                paginationContainer.appendChild(prevBtn);
+                paginationElement.appendChild(prevButton);
                 
                 // Page buttons
                 const maxVisiblePages = 5;
@@ -990,91 +889,162 @@
                 }
                 
                 if (startPage > 1) {
-                    const firstBtn = document.createElement('button');
-                    firstBtn.className = 'page-btn';
-                    firstBtn.textContent = '1';
-                    firstBtn.addEventListener('click', () => {
+                    const firstPageButton = document.createElement('button');
+                    firstPageButton.className = 'page-button';
+                    firstPageButton.textContent = '1';
+                    firstPageButton.addEventListener('click', () => {
                         currentPage = 1;
-                        renderGuilds();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        updateDisplay();
                     });
-                    paginationContainer.appendChild(firstBtn);
+                    paginationElement.appendChild(firstPageButton);
                     
                     if (startPage > 2) {
                         const ellipsis = document.createElement('span');
                         ellipsis.textContent = '...';
-                        ellipsis.style.padding = '0.6rem 1rem';
-                        ellipsis.style.color = 'var(--void-text-dim)';
-                        paginationContainer.appendChild(ellipsis);
+                        ellipsis.style.display = 'flex';
+                        ellipsis.style.alignItems = 'center';
+                        ellipsis.style.padding = '0 10px';
+                        ellipsis.style.color = 'var(--neon-blue)';
+                        paginationElement.appendChild(ellipsis);
                     }
                 }
                 
                 for (let i = startPage; i <= endPage; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.className = `page-btn ${i === currentPage ? 'active-page' : ''}`;
-                    pageBtn.textContent = i;
-                    pageBtn.addEventListener('click', () => {
+                    const pageButton = document.createElement('button');
+                    pageButton.className = `page-button ${i === currentPage ? 'active' : ''}`;
+                    pageButton.textContent = i;
+                    pageButton.addEventListener('click', () => {
                         currentPage = i;
-                        renderGuilds();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        updateDisplay();
                     });
-                    paginationContainer.appendChild(pageBtn);
+                    paginationElement.appendChild(pageButton);
                 }
                 
                 if (endPage < totalPages) {
                     if (endPage < totalPages - 1) {
                         const ellipsis = document.createElement('span');
                         ellipsis.textContent = '...';
-                        ellipsis.style.padding = '0.6rem 1rem';
-                        ellipsis.style.color = 'var(--void-text-dim)';
-                        paginationContainer.appendChild(ellipsis);
+                        ellipsis.style.display = 'flex';
+                        ellipsis.style.alignItems = 'center';
+                        ellipsis.style.padding = '0 10px';
+                        ellipsis.style.color = 'var(--neon-blue)';
+                        paginationElement.appendChild(ellipsis);
                     }
                     
-                    const lastBtn = document.createElement('button');
-                    lastBtn.className = 'page-btn';
-                    lastBtn.textContent = totalPages;
-                    lastBtn.addEventListener('click', () => {
+                    const lastPageButton = document.createElement('button');
+                    lastPageButton.className = 'page-button';
+                    lastPageButton.textContent = totalPages;
+                    lastPageButton.addEventListener('click', () => {
                         currentPage = totalPages;
-                        renderGuilds();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        updateDisplay();
                     });
-                    paginationContainer.appendChild(lastBtn);
+                    paginationElement.appendChild(lastPageButton);
                 }
                 
                 // Next button
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'page-btn';
-                nextBtn.textContent = '→';
-                nextBtn.disabled = currentPage === totalPages;
-                nextBtn.addEventListener('click', () => {
+                const nextButton = document.createElement('button');
+                nextButton.className = `page-button ${currentPage === totalPages ? 'disabled' : ''}`;
+                nextButton.textContent = 'Next';
+                nextButton.addEventListener('click', () => {
                     if (currentPage < totalPages) {
                         currentPage++;
-                        renderGuilds();
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        updateDisplay();
                     }
                 });
-                paginationContainer.appendChild(nextBtn);
+                paginationElement.appendChild(nextButton);
             });
         }
 
+        // Update page info
+        function updatePageInfo() {
+            const startIndex = (currentPage - 1) * serversPerPage + 1;
+            const endIndex = Math.min(currentPage * serversPerPage, filteredServers.length);
+            document.getElementById('pageInfo').textContent = 
+                `Showing ${startIndex}-${endIndex} of ${filteredServers.length} servers`;
+        }
+
+        // Update all display elements
+        function updateDisplay() {
+            displayServers();
+            updatePagination();
+            updatePageInfo();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Search and sort servers
+        function searchAndSortServers() {
+            const searchTerm = normalizeText(document.getElementById('searchInput').value);
+            const sortOption = document.getElementById('sortSelect').value;
+            const searchType = document.querySelector('input[name="searchType"]:checked').value;
+            
+            // Reset to first page when searching
+            currentPage = 1;
+            
+            if (searchTerm) {
+                filteredServers = allServers.filter(server => {
+                    const normalizedName = normalizeText(server.name);
+                    const normalizedTag = normalizeText(server.tag);
+                    
+                    if (searchType === 'name') {
+                        return normalizedName.includes(searchTerm);
+                    } else if (searchType === 'tag') {
+                        return normalizedTag.includes(searchTerm);
+                    } else { // both
+                        return normalizedName.includes(searchTerm) || 
+                               normalizedTag.includes(searchTerm);
+                    }
+                });
+            } else {
+                filteredServers = [...allServers];
+            }
+            
+            // Sort servers
+            switch (sortOption) {
+                case 'members-desc':
+                    filteredServers.sort((a, b) => b.members - a.members);
+                    break;
+                case 'members-asc':
+                    filteredServers.sort((a, b) => a.members - b.members);
+                    break;
+                case 'name-asc':
+                    filteredServers.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name-desc':
+                    filteredServers.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                case 'tag-asc':
+                    filteredServers.sort((a, b) => a.tag.localeCompare(b.tag));
+                    break;
+                case 'tag-desc':
+                    filteredServers.sort((a, b) => b.tag.localeCompare(a.tag));
+                    break;
+            }
+            
+            totalPages = Math.ceil(filteredServers.length / serversPerPage);
+            updateDisplay();
+        }
+
         // Event listeners
-        searchInput.addEventListener('input', () => {
-            currentPage = 1;
-            renderGuilds();
+        document.getElementById('searchInput').addEventListener('input', () => {
+            // Debounce the search to avoid too many requests while typing
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(searchAndSortServers, 300);
+        });
+        
+        document.getElementById('sortSelect').addEventListener('change', searchAndSortServers);
+        
+        // Add event listeners to all search type radio buttons
+        document.querySelectorAll('input[name="searchType"]').forEach(radio => {
+            radio.addEventListener('change', searchAndSortServers);
         });
 
-        searchType.addEventListener('change', () => {
-            currentPage = 1;
-            renderGuilds();
+        // Logo/title click handler
+        document.getElementById('logoTitle').addEventListener('click', () => {
+            window.location.href = 'https://guns.lol/everywhere';
         });
 
-        sortBy.addEventListener('change', () => {
-            currentPage = 1;
-            renderGuilds();
-        });
-
-        // Initialize
-        fetchGuilds();
+        // Initial load
+        loadServers();
     </script>
 </body>
 </html>
