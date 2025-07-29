@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Void Bot - Terms of Service</title>
+    <title>Void Bot - Privacy Policy</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,104 +11,143 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            color: #e0e0e0;
-            background-color: #1a1a1a;
+            color: #333;
         }
         h1 {
-            color: #7289da;
-            border-bottom: 1px solid #7289da;
+            color: #5865F2;
+            border-bottom: 2px solid #5865F2;
             padding-bottom: 10px;
         }
         h2 {
-            color: #7289da;
-            margin-top: 20px;
-        }
-        .last-updated {
-            font-style: italic;
-            color: #999;
-            margin-bottom: 30px;
+            color: #5865F2;
+            margin-top: 25px;
         }
         a {
-            color: #7289da;
+            color: #5865F2;
             text-decoration: none;
         }
         a:hover {
             text-decoration: underline;
         }
+        .last-updated {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
-    <h1>Void Bot – Terms of Service</h1>
-    <div class="last-updated">Last Updated: July 24, 2025</div>
+    <h1>Void Bot – Privacy Policy</h1>
+    <p class="last-updated">Last Updated: July 29, 2025</p>
 
-    <p>By using the Void Discord bot ("Void," "the Bot," "we," "our," or "us"), you agree to the following Terms of Service. If you do not agree, you may not use the Bot.</p>
+    <p>This Privacy Policy explains what data Void ("the Bot", "we", "our", or "us") collects, how we use it, and how we keep it safe. By using Void, you agree to the practices described below.</p>
 
-    <h2>Description of Service</h2>
-    <p>Void is a tag‑search and tracking database integrated with Discord.<br>
-    It allows users to:</p>
-    <ul>
-        <li>Search any Discord tag that the bot indexes or stores.</li>
-        <li>Track and monitor tags in Discord servers where the bot is present.</li>
-    </ul>
-    <p>Void does not replace Discord's own services and operates within the limits of the Discord API and applicable policies.</p>
+    <h2>Information We Collect</h2>
+    <p>When you use Void, we may collect and process certain Discord‑provided data in order to perform tag searches, server tag tracking, and usage-based enhancements. This may include:</p>
 
-    <h2>Acceptance of Terms</h2>
-    <p>By inviting or using Void in a server or through direct interaction, you:</p>
+    <h3>User Data</h3>
     <ul>
-        <li>Confirm that you are at least 13 years old (or the minimum age required to use Discord in your region).</li>
-        <li>Have permission to use Discord and to add or interact with bots in the server.</li>
-    </ul>
-    <p>If you do not meet these requirements, you may not use the Bot.</p>
-
-    <h2>Data Collection & Usage</h2>
-    <p>Void processes certain Discord data to provide its functions.<br>
-    This may include:</p>
-    <ul>
-        <li>Discord usernames, IDs, and tags you search for.</li>
-        <li>Server IDs, server tags, and relevant metadata.</li>
-        <li>Logs of searches or tag changes for debugging or tracking purposes.</li>
-    </ul>
-    <p>Void does not collect or store:</p>
-    <ul>
-        <li>Passwords or private messages.</li>
-        <li>Any content unrelated to its tag search and tracking features.</li>
-    </ul>
-    <p>Data is used only to provide the Bot's services, improve functionality, and comply with Discord's Developer Terms of Service.</p>
-
-    <h2>User Conduct</h2>
-    <p>You agree not to:</p>
-    <ul>
-        <li>Use Void for any illegal purpose or in violation of Discord's Terms of Service or Community Guidelines.</li>
-        <li>Abuse, spam, or overload the Bot with excessive requests.</li>
-        <li>Attempt to exploit or modify the Bot, its database, or its features.</li>
-    </ul>
-    <p>We reserve the right to restrict or block users or servers that misuse Void.</p>
-
-    <h2>Availability & Limitations</h2>
-    <p>Void is provided "as is."<br>
-    We do not guarantee:</p>
-    <ul>
-        <li>Continuous uptime or error‑free performance.</li>
-        <li>Accuracy or completeness of search results.</li>
-        <li>That tag data is always current or correct.</li>
-    </ul>
-    <p>We may modify or discontinue features at any time without notice.</p>
-
-    <h2>Liability</h2>
-    <p>To the maximum extent permitted by law:</p>
-    <ul>
-        <li>We are not liable for any damages, losses, or issues caused by using Void.</li>
-        <li>Your use of the Bot is at your own risk.</li>
+        <li>Discord usernames, IDs, and tags that are searched or tracked.</li>
+        <li>Commands you issue to the Bot (including message content for command parsing and contextual replies).</li>
+        <li>Presence/activity status of users (used for tracking tag usage in profiles).</li>
     </ul>
 
-    <h2>Changes to Terms</h2>
-    <p>We may update these Terms of Service at any time. Significant changes will be announced in our support server or through the Bot. Continued use after changes means you accept the new Terms.</p>
+    <h3>Server Data</h3>
+    <ul>
+        <li>Server IDs where Void is added.</li>
+        <li>Server tags, metadata, and tag associations used for tracking.</li>
+        <li>Server-specific vanity representations appearing in user profiles.</li>
+    </ul>
+
+    <h3>Log Data (for debugging and moderation)</h3>
+    <ul>
+        <li>Timestamps of commands and interactions.</li>
+        <li>Internal error or performance logs.</li>
+    </ul>
+
+    <h2>Why We Track Message Content</h2>
+    <p>Void uses limited message content tracking solely to:</p>
+    <ul>
+        <li>Parse slash and context commands (when applicable).</li>
+        <li>Generate dynamic help embeds or contextual Bot responses.</li>
+        <li>Ensure proper functionality of features like /taglist, /tagsearch, or when handling mentions of tracked tags within user input.</li>
+    </ul>
+    <p>We do not read, store, or analyze private conversations or unrelated messages. Only messages directly interacting with the Bot are processed, and only the minimum necessary content is read to perform the function.</p>
+
+    <h2>Why We Track Presence Information</h2>
+    <p>Void uses presence and activity tracking to:</p>
+    <ul>
+        <li>Identify when a user is displaying server-specific tags, vanity URLs, or emojis in their profile.</li>
+        <li>Track server representation in user statuses (e.g., when a user promotes your community).</li>
+        <li>Support moderation or analytics features based on server presence trends.</li>
+    </ul>
+    <p>This allows Void to give accurate insight into how many users are actively promoting or representing your server at a given time.</p>
+
+    <h2>Why We Track Primary Guild Changes</h2>
+    <p>Void monitors primary guild changes from member update events in order to:</p>
+    <ul>
+        <li>Detect when a user removes or adds a server tag in their status.</li>
+        <li>Automatically adjust tracking for server tag engagement (such as tracking how many users have the server tag "equipped").</li>
+    </ul>
+    <p>This supports accurate tag usage metrics and community tracking across multiple servers.</p>
+
+    <h2>How We Use the Data</h2>
+    <p>We only use collected data to:</p>
+    <ul>
+        <li>Provide and improve the Bot's tag search, analytics, and tracking features.</li>
+        <li>Detect when server vanity tags are being displayed in user statuses.</li>
+        <li>Maintain stability, monitor abuse, and fix bugs.</li>
+        <li>Comply with Discord's Developer Terms of Service and applicable laws.</li>
+    </ul>
+
+    <h3>We Do Not:</h3>
+    <ul>
+        <li>Sell or share your data with third parties for marketing.</li>
+        <li>Collect passwords, private messages, or any non‑Discord data.</li>
+        <li>Integrate with non-Discord platforms or third-party advertising services.</li>
+    </ul>
+
+    <h2>Data Storage & Retention</h2>
+    <p>Data is stored only as long as necessary for Void to function properly and for maintenance or debugging purposes.</p>
+    <p>We may occasionally retain anonymized or aggregated usage data (e.g., command usage frequency or tag popularity) for improving features.</p>
+    <p>If you wish to have certain data (such as search logs or tracked tags) removed, please contact us via our support server or email.</p>
+
+    <h2>Data Sharing</h2>
+    <p>We do not share your data unless:</p>
+    <ul>
+        <li>Required by law or legal process.</li>
+        <li>Necessary to comply with Discord's policies.</li>
+        <li>Needed to investigate abuse, security incidents, or spam.</li>
+    </ul>
+
+    <h2>Security</h2>
+    <p>We take reasonable steps to protect all collected data:</p>
+    <ul>
+        <li>Secure, limited-access databases.</li>
+        <li>Regular auditing for unauthorized access.</li>
+        <li>Bug and error monitoring to patch vulnerabilities.</li>
+    </ul>
+    <p>However, no system is 100% secure. We cannot guarantee absolute protection, but we strive to follow best security practices.</p>
+
+    <h2>Your Choices & Rights</h2>
+    <ul>
+        <li><strong>Opt‑Out:</strong> You may stop using the Bot or remove it from your server at any time.</li>
+        <li><strong>Data Requests:</strong> You may request to review or delete any personal or server-related data associated with your usage of Void.</li>
+    </ul>
+
+    <h2>Third‑Party Services</h2>
+    <p>Void operates through the Discord platform and adheres to Discord's Privacy Policy. We do not integrate with unrelated third-party services.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>We may revise this Privacy Policy periodically. Significant changes will be posted in our support server or announced via Bot message. Continued use of the Bot after updates means you accept the revised terms.</p>
 
     <h2>Contact</h2>
-    <p>If you have questions or concerns about these Terms, please reach out:<br>
-    Support Server: <a href="https://discord.gg/voidguild">Void</a><br>
-    Contact Owner: <a href="https://guns.lol/!">Milo</a></p>
+    <ul>
+        <li><strong>Support Server:</strong> <a href="https://voidtags.xyz/" target="_blank">Void</a></li>
+        <li><strong>Bot Owner:</strong> <a href="https://guns.lol/" target="_blank">Milo</a></li>
+        <li><strong>Email:</strong> <a href="mailto:milor2427@gmail.com">milor2427@gmail.com</a></li>
+    </ul>
 
-    <p>By using Void, you acknowledge that you have read, understood, and agreed to these Terms of Service.</p>
+    <p>By using Void, you acknowledge that you have read, understood, and agreed to this Privacy Policy.</p>
 </body>
 </html>
